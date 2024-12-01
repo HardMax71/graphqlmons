@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéVerse</title>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --space-dark: #0B0E18;
+            --space-light: #1B2039;
+            --star-color: #E0E7FF;
+            --accent-primary: #60A5FA;
+            --accent-secondary: #3B82F6;
+            --glow-color: rgba(96, 165, 250, 0.3);
+            --transition-duration: 0.3s;
+            --modal-background: var(--space-light);
+            --modal-text-color: var(--star-color);
+        }
+
+        body {
+            background: var(--space-dark);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Enhanced Starry Background */
+        .constellation-container {
+            height: calc(100vh - 3.25rem);
+            background: radial-gradient(circle at center, var(--space-light) 0%, var(--space-dark) 100%);
+            position: relative;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        .constellation-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(1px 1px at 10% 10%, var(--star-color) 1px, transparent 0),
+            radial-gradient(1px 1px at 20% 50%, var(--star-color) 1px, transparent 0),
+            radial-gradient(1px 1px at 30% 30%, var(--star-color) 1px, transparent 0),
+            radial-gradient(1px 1px at 40% 70%, var(--star-color) 1px, transparent 0);
+            background-size: 400px 400px;
+            animation: starTwinkle 4s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Refined Navbar */
+        .navbar {
+            background: rgba(11, 14, 24, 0.95) !important;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+            z-index: 10;
+        }
+
+        .navbar-item {
+            color: var(--star-color) !important;
+            font-weight: 500;
+            transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width var(--transition-duration) ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-item:hover::after,
+        .navbar-item.is-active::after {
+            width: 80%;
+        }
+
+        /* Enhanced Burger Icon Animation */
+        .navbar-burger {
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .navbar-burger.is-active {
+            transform: rotate(90deg);
+        }
+
+        /* Dropdown Menu Enhancements */
+        .navbar-menu {
+            background: rgba(11, 14, 24, 0.95);
+            /* Removed display: none; to prevent conflicts with Bulma */
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 0; /* Remove default padding */
+        }
+
+        /* Show navbar menu when active */
+        .navbar-menu.is-active {
+            /* Removed display: flex !important; as Bulma handles this */
+            /* Retain flex-direction and alignment */
+        }
+
+        .navbar-menu .navbar-start .navbar-item,
+        .navbar-menu .navbar-end .navbar-item {
+            background: transparent;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+            width: 100%;
+            text-align: center;
+        }
+
+        .navbar-menu .navbar-start .navbar-item:last-child,
+        .navbar-menu .navbar-end .navbar-item:last-child {
+            border-bottom: none;
+        }
+
+        .navbar-menu .navbar-start .navbar-item:hover,
+        .navbar-menu .navbar-end .navbar-item:hover {
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--star-color) !important;
+        }
+
+        /* Hide navbar menu on desktop if not active */
+        @media screen and (min-width: 769px) {
+            .navbar-menu {
+                background: transparent;
+                flex-direction: row;
+                justify-content: flex-end;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .navbar-menu .navbar-start,
+            .navbar-menu .navbar-end {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .navbar-menu .navbar-start .navbar-item,
+            .navbar-menu .navbar-end .navbar-item {
+                border: none;
+                text-align: left;
+                padding: 0.75rem 1rem;
+                width: auto;
+            }
+
+            .navbar-menu .navbar-end .buttons {
+                display: flex;
+                align-items: center;
+                margin-left: 1rem;
+            }
+
+            /* Position GitHub button to the right on desktop */
+            .navbar-menu .navbar-end .buttons {
+                margin-top: 0;
+                border-top: none;
+                padding-top: 0;
+            }
+        }
+
+        /* Enhanced Node Styling */
+        .node {
+            position: absolute;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            cursor: pointer;
+            animation: float 6s ease-in-out infinite;
+            animation-delay: calc(var(--delay, 0) * -1s);
+            z-index: 2;
+        }
+
+        .node-content {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 2px;
+            background: rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 15px var(--glow-color);
+            transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+            transform: rotateY(0deg);
+        }
+
+        .node img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: contain;
+            background: rgba(27, 32, 57, 0.6);
+            padding: 4px;
+            transition: transform var(--transition-duration) ease, background var(--transition-duration) ease;
+        }
+
+        .node:hover .node-content {
+            transform: scale(1.2) translateZ(30px) rotateY(360deg);
+            box-shadow: 0 0 30px var(--glow-color);
+        }
+
+        .node-name {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--star-color);
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity var(--transition-duration) ease, bottom var(--transition-duration) ease;
+            text-shadow: 0 0 10px var(--glow-color);
+            pointer-events: none;
+        }
+
+        .node:hover .node-name {
+            opacity: 1;
+            bottom: -30px;
+        }
+
+        /* Improved Connection Lines */
+        .node-line {
+            position: absolute;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--accent-primary),
+            transparent
+            );
+            transform-style: preserve-3d;
+            opacity: 0.2;
+            transition: opacity var(--transition-duration) ease;
+            z-index: 1;
+        }
+
+        .node:hover + .node-line,
+        .node-line:hover {
+            opacity: 0.6;
+        }
+
+        /* Enhanced Modal */
+        .modal-card {
+            background: var(--modal-background);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 90%;
+            width: auto;
+            margin: 20px;
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-card-head {
+            background: var(--space-dark);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            color: var(--modal-text-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-card-body {
+            background: var(--modal-background);
+            color: var(--modal-text-color);
+            padding: 1.5rem;
+        }
+
+        .progress {
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .progress::-webkit-progress-value {
+            background: var(--accent-primary);
+            transition: width 0.5s ease;
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: var(--star-color);
+            animation: pulse 2s infinite;
+            z-index: 3;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotateZ(0);
+            }
+            50% {
+                transform: translateY(-10px) rotateZ(2deg);
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media screen and (max-width: 1024px) {
+            .node-content {
+                width: 50px;
+                height: 50px;
+            }
+
+            .node-name {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar-menu {
+                background: rgba(11, 14, 24, 0.95);
+                backdrop-filter: blur(8px);
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                padding: 0;
+            }
+
+            .node-content {
+                width: 40px;
+                height: 40px;
+            }
+
+            .node-name {
+                font-size: 0.6rem;
+                bottom: -20px;
+            }
+
+            /* Ensure Dropdown Items Cover Entire Width on Mobile */
+            .navbar-menu .navbar-start,
+            .navbar-menu .navbar-end {
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+            }
+
+            .navbar-menu .navbar-start .navbar-item,
+            .navbar-menu .navbar-end .navbar-item {
+                width: 100%;
+                padding: 0.75rem 1.5rem;
+            }
+
+            /* Position GitHub button at the bottom */
+            .navbar-menu .navbar-end {
+                margin-top: auto;
+                width: 100%;
+            }
+
+            .navbar-menu .navbar-end .buttons {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                padding: 0.75rem 1.5rem;
+                border-top: 1px solid rgba(96, 165, 250, 0.1);
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .constellation-container {
+                height: calc(100vh - 4.25rem);
+            }
+
+            .modal-card {
+                margin: 10px;
+            }
+
+            .navbar-brand .navbar-item span {
+                display: none;
+            }
+
+            .navbar-item {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+
+        /* Additional Styles for Dropdown Menu and Modal Enhancements */
+
+        /* Dropdown Menu Items Styling */
+        .navbar-menu .navbar-start .navbar-item,
+        .navbar-menu .navbar-end .navbar-item {
+            background: transparent;
+            color: var(--star-color) !important;
+        }
+
+        .navbar-menu .navbar-start .navbar-item:hover,
+        .navbar-menu .navbar-end .navbar-item:hover {
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--star-color) !important;
+        }
+
+        /* Modal Text Styling */
+        .modal-card-body p,
+        .modal-card-body label {
+            color: var(--modal-text-color) !important;
+        }
+
+        .modal-card-body .progress::-webkit-progress-value {
+            background: var(--accent-primary) !important;
+        }
+
+        /* Type Labels Styling (Optional) */
+        .type-group .type-label {
+            color: var(--star-color);
+            font-size: 0.75rem;
+            text-transform: capitalize;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        /* Ensure Modal Content is Responsive */
+        @media screen and (max-width: 768px) {
+            .modal-card-body .columns {
+                flex-direction: column;
+            }
+
+            .modal-card-body .column.is-one-third {
+                max-width: 100%;
+            }
+        }
+
+        /* Stat Container to align progress bar and number horizontally */
+        .stat-container {
+            display: flex;
+            align-items: center;
+            margin-top: 0.5rem; /* Optional: Adds spacing between label and stat */
+        }
+
+        /* Stat Number Styling */
+        .stat-number {
+            margin-left: 10px;
+            color: var(--star-color);
+            font-weight: bold;
+            min-width: 30px; /* Ensures consistent spacing */
+        }
+
+        /* Ensure labels have sufficient contrast */
+        .modal-card-body .label {
+            color: var(--star-color) !important;
+            font-weight: bold;
+        }
+
+        /* Optional: Enhance readability of progress bars */
+        .modal-card-body .progress.is-info {
+            background-color: rgba(224, 231, 255, 0.1); /* Lighten the background of the progress bar */
+        }
+
+        .modal-card-body .progress.is-info::-webkit-progress-value {
+            background: var(--accent-primary);
+        }
+
+        /* Adjust the text inside the modal for better readability */
+        .modal-card-body p,
+        .modal-card-body label,
+        .modal-card-body .stat-number {
+            color: var(--star-color) !important;
+        }
+
+        /* Optional: Increase font size for better readability */
+        .modal-card-body .label,
+        .modal-card-body .stat-number {
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="index.html">
+            <i class="fas fa-pokemon fa-lg mr-2"></i>
+            <span>PokéVerse</span>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
+    </div>
+
+    <div id="navMenu" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item is-active" href="index.html">
+                <i class="fas fa-globe mr-2"></i>
+                Universe
+            </a>
+            <a class="navbar-item" href="abilities.html">
+                <i class="fas fa-bolt mr-2"></i>
+                Abilities
+            </a>
+            <a class="navbar-item" href="moves.html">
+                <i class="fas fa-fire mr-2"></i>
+                Moves
+            </a>
+            <a class="navbar-item" href="types.html">
+                <i class="fas fa-layer-group mr-2"></i>
+                Types
+            </a>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-light" href="https://github.com/your-repo">
+                            <span class="icon">
+                                <i class="fab fa-github"></i>
+                            </span>
+                        <span>GitHub</span>
+                    </a>
+                    <!-- Removed Twitter Button as per your request -->
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Constellation Container -->
+<div class="constellation-container">
+    <div class="loading">Loading Pokémon Universe</div>
+</div>
+
+<!-- Modal for Pokémon Details -->
+<div id="modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"></p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <!-- Dynamic Content -->
+        </section>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script src="js/constellation.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const burger = document.querySelector('.navbar-burger');
+        const menu = document.querySelector('#navMenu');
+
+        if (burger) {
+            burger.addEventListener('click', () => {
+                burger.classList.toggle('is-active');
+                menu.classList.toggle('is-active');
+            });
+        }
+
+        // Optional: Close the menu when a navbar item is clicked (useful for mobile)
+        const navbarItems = document.querySelectorAll('.navbar-menu .navbar-item');
+        navbarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (menu.classList.contains('is-active')) {
+                    menu.classList.remove('is-active');
+                    burger.classList.remove('is-active');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

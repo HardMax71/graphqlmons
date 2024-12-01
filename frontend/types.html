@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PokéVerse - Types</title>
+    <!-- Bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --space-dark: #0B0E18;
+            --space-light: #1B2039;
+            --star-color: #E0E7FF;
+            --accent-primary: #60A5FA;
+            --accent-secondary: #3B82F6;
+            --glow-color: rgba(96, 165, 250, 0.3);
+            --transition-duration: 0.3s;
+            --modal-background: var(--space-light);
+            --modal-text-color: var(--star-color);
+        }
+
+        body {
+            background: var(--space-dark);
+            font-family: 'Quicksand', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+            position: relative;
+            z-index: 0;
+        }
+
+        /* Enhanced Starry Background as Fixed */
+        .constellation-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, var(--space-light) 0%, var(--space-dark) 100%);
+            background-repeat: repeat;
+            background-size: 400px 400px;
+            z-index: -1; /* Behind all content */
+        }
+
+        .constellation-container::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(1px 1px at 10% 10%, var(--star-color) 1px, transparent 0),
+                              radial-gradient(1px 1px at 20% 50%, var(--star-color) 1px, transparent 0),
+                              radial-gradient(1px 1px at 30% 30%, var(--star-color) 1px, transparent 0),
+                              radial-gradient(1px 1px at 40% 70%, var(--star-color) 1px, transparent 0);
+            background-size: 400px 400px;
+            animation: starTwinkle 4s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes starTwinkle {
+            0%, 100% {
+                opacity: 0.8;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Refined Navbar */
+        .navbar {
+            background: rgba(11, 14, 24, 0.95) !important;
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+            z-index: 10;
+        }
+
+        .navbar-item {
+            color: var(--star-color) !important;
+            font-weight: 500;
+            transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .navbar-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent-primary);
+            transition: width var(--transition-duration) ease;
+            transform: translateX(-50%);
+        }
+
+        .navbar-item:hover::after,
+        .navbar-item.is-active::after {
+            width: 80%;
+        }
+
+        /* Enhanced Burger Icon Animation */
+        .navbar-burger {
+            transition: transform var(--transition-duration) ease;
+        }
+
+        .navbar-burger.is-active {
+            transform: rotate(90deg);
+        }
+
+        /* Dropdown Menu Enhancements */
+        .navbar-menu {
+            background: rgba(11, 14, 24, 0.95);
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            padding: 0;
+            z-index: 10;
+        }
+
+        /* Show navbar menu when active */
+        .navbar-menu.is-active {
+            /* Bulma handles display */
+        }
+
+        .navbar-menu .navbar-start .navbar-item,
+        .navbar-menu .navbar-end .navbar-item {
+            background: transparent;
+            padding: 0.75rem 1.5rem;
+            border-bottom: 1px solid rgba(96, 165, 250, 0.1);
+            width: 100%;
+            text-align: center;
+            transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
+        }
+
+        .navbar-menu .navbar-start .navbar-item:last-child,
+        .navbar-menu .navbar-end .navbar-item:last-child {
+            border-bottom: none;
+        }
+
+        .navbar-menu .navbar-start .navbar-item:hover,
+        .navbar-menu .navbar-end .navbar-item:hover {
+            background: rgba(96, 165, 250, 0.1);
+            color: var(--star-color) !important;
+        }
+
+        /* Hide navbar menu on desktop if not active */
+        @media screen and (min-width: 769px) {
+            .navbar-menu {
+                background: transparent;
+                flex-direction: row;
+                justify-content: flex-end;
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .navbar-menu .navbar-start,
+            .navbar-menu .navbar-end {
+                flex-direction: row;
+                align-items: center;
+            }
+
+            .navbar-menu .navbar-start .navbar-item,
+            .navbar-menu .navbar-end .navbar-item {
+                border: none;
+                text-align: left;
+                padding: 0.75rem 1rem;
+                width: auto;
+            }
+
+            .navbar-menu .navbar-end .buttons {
+                display: flex;
+                align-items: center;
+                margin-left: 1rem;
+            }
+
+            /* Position GitHub button to the right on desktop */
+            .navbar-menu .navbar-end .buttons {
+                margin-top: 0;
+                border-top: none;
+                padding-top: 0;
+            }
+        }
+
+        /* Enhanced Type Card Styling */
+        .type-card {
+            background: rgba(27, 32, 57, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transition: transform var(--transition-duration) ease, box-shadow var(--transition-duration) ease;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            animation: fadeInUp 0.5s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .type-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .type-card .card-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .type-card .title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+            transition: color var(--transition-duration) ease;
+        }
+
+        .type-card .title:hover {
+            color: var(--accent-primary);
+        }
+
+        .type-card .tags {
+            margin-bottom: 1rem;
+        }
+
+        /* Type-Specific Tag Styles */
+        .type-card .tag.type-fire {
+            background-color: #F08030;
+            color: #fff;
+        }
+
+        .type-card .tag.type-water {
+            background-color: #6890F0;
+            color: #fff;
+        }
+
+        .type-card .tag.type-grass {
+            background-color: #78C850;
+            color: #fff;
+        }
+
+        .type-card .tag.type-electric {
+            background-color: #F8D030;
+            color: #fff;
+        }
+
+        .type-card .tag.type-ice {
+            background-color: #98D8D8;
+            color: #fff;
+        }
+
+        .type-card .tag.type-dark {
+            background-color: #705848;
+            color: #fff;
+        }
+
+        .type-card .tag.type-fairy {
+            background-color: #EE99AC;
+            color: #fff;
+        }
+
+        /* Add more type-specific tag styles as needed */
+
+        .type-card .tag.is-dark {
+            background-color: #3A3A3A;
+            color: #fff;
+        }
+
+        .type-card .content p {
+            margin-bottom: 0.5rem;
+            transition: color var(--transition-duration) ease;
+        }
+
+        .type-card .content p:hover {
+            color: var(--accent-primary);
+        }
+
+        .type-card .card-footer {
+            background: rgba(27, 32, 57, 0.9);
+            border-top: 1px solid rgba(96, 165, 250, 0.1);
+            transition: background var(--transition-duration) ease;
+        }
+
+        .type-card .card-footer-item {
+            color: var(--accent-primary);
+            font-weight: 600;
+            transition: color var(--transition-duration) ease;
+            cursor: pointer;
+        }
+
+        .type-card .card-footer-item:hover {
+            color: var(--accent-secondary);
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: var(--star-color);
+            animation: pulse 2s infinite;
+            z-index: 3;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Fade-In-Up Animation for Type Cards */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Enhanced Modal Styling */
+        .modal-card {
+            background: var(--modal-background);
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 90%;
+            width: auto;
+            margin: 20px;
+            animation: modalFadeIn 0.5s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-card-head {
+            background: var(--space-dark);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
+            color: var(--modal-text-color);
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-card-body {
+            background: var(--modal-background);
+            color: var(--modal-text-color);
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        /* Responsive Adjustments */
+        @media screen and (max-width: 768px) {
+            .type-card {
+                margin-bottom: 1.5rem;
+            }
+
+            .type-card .card-content {
+                padding: 1rem;
+            }
+
+            .modal-card-body .columns {
+                flex-direction: column;
+            }
+
+            .modal-card-body .column.is-one-third {
+                max-width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            .constellation-container {
+                height: calc(100vh - 4.25rem);
+            }
+
+            .modal-card {
+                margin: 10px;
+            }
+
+            .navbar-brand .navbar-item span {
+                display: none;
+            }
+
+            .navbar-item {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="index.html">
+            <i class="fas fa-pokemon fa-lg mr-2"></i>
+            <span>PokéVerse</span>
+        </a>
+
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navMenu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </a>
+    </div>
+
+    <div id="navMenu" class="navbar-menu">
+        <div class="navbar-start">
+            <a class="navbar-item" href="index.html">
+                <i class="fas fa-globe mr-2"></i>
+                Universe
+            </a>
+            <a class="navbar-item" href="abilities.html">
+                <i class="fas fa-bolt mr-2"></i>
+                Abilities
+            </a>
+            <a class="navbar-item" href="moves.html">
+                <i class="fas fa-fire mr-2"></i>
+                Moves
+            </a>
+            <a class="navbar-item is-active" href="types.html">
+                <i class="fas fa-layer-group mr-2"></i>
+                Types
+            </a>
+        </div>
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    <a class="button is-light" href="https://github.com/your-repo">
+                        <span class="icon">
+                            <i class="fab fa-github"></i>
+                        </span>
+                        <span>GitHub</span>
+                    </a>
+                    <!-- Removed Twitter Button as per your request -->
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Constellation Container -->
+<div class="constellation-container">
+    <div class="loading">Loading Pokémon Types</div>
+</div>
+
+<!-- Types Section -->
+<section class="section">
+    <div class="container">
+        <div class="columns is-multiline types-grid"></div>
+        <nav class="pagination is-centered" role="navigation" aria-label="pagination"></nav>
+    </div>
+</section>
+
+<!-- Modal for Type Details -->
+<div id="modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title"></p>
+            <button class="delete" aria-label="close"></button>
+        </header>
+        <section class="modal-card-body">
+            <!-- Dynamic Content -->
+        </section>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/api.js"></script>
+<script src="js/types.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const burger = document.querySelector('.navbar-burger');
+        const menu = document.querySelector('#navMenu');
+
+        if (burger) {
+            burger.addEventListener('click', () => {
+                burger.classList.toggle('is-active');
+                menu.classList.toggle('is-active');
+            });
+        }
+
+        // Optional: Close the menu when a navbar item is clicked (useful for mobile)
+        const navbarItems = document.querySelectorAll('.navbar-menu .navbar-item');
+        navbarItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (menu.classList.contains('is-active')) {
+                    menu.classList.remove('is-active');
+                    burger.classList.remove('is-active');
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
